@@ -167,7 +167,9 @@ const buildDashboardPage = () => {
                 authError.style.display = 'block';
             }
         });
-        return; 
+    } else {
+        // Schedule initDashboard to run immediately after definition
+        setTimeout(initDashboard, 0);
     }
 
     // --- Dashboard Core ---
@@ -301,7 +303,7 @@ const buildDashboardPage = () => {
         });
     };
 
-    initDashboard();
+    // initDashboard called above via setTimeout if already authorized
 };
 
 document.addEventListener("DOMContentLoaded", () => {
