@@ -3,84 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Energybae | Go Solar Today</title>
-    <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Energybae</title>
     <link rel="stylesheet" href="css/main.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="capture-page">
+<body>
 
-    <!-- Decorative background blobs -->
-    <div class="blob top-left"></div>
-    <div class="blob bottom-right"></div>
+    <!-- Simple Modern Topbar -->
+    <nav class="navbar" style="background: transparent; border: none; padding-top: 1.5rem;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0;">
+            <div class="brand">
+                <i data-lucide="zap" style="color: var(--text-main); width: 20px;"></i>
+                Energybae
+            </div>
+            <div class="nav-actions">
+                <button id="themeToggle" class="theme-toggle" aria-label="Toggle Theme">
+                    <i data-lucide="moon" class="moon-icon"></i>
+                    <i data-lucide="sun" class="sun-icon hidden"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
 
-    <div class="container">
-        <header class="header">
-            <h1 class="logo">⚡ Energybae</h1>
-            <p>Your journey to clean, free energy starts here.</p>
-        </header>
+    <div class="container" style="padding-top: 1rem;">
+        <div style="margin-bottom: 2.5rem;">
+            <h1>Get Your Estimate.</h1>
+            <p class="text-muted" style="margin-top: 0.5rem;">Enter your property details below for an automated solar consultation.</p>
+        </div>
 
-        <div class="card glass-form">
-            <h2>Get Your Free Solar Estimate</h2>
-            <p class="subtitle">Enter your details below and our experts will contact you within 24 hours.</p>
-
+        <div class="card card-padded">
             <form id="leadForm">
                 <div class="form-group">
                     <label for="name">Full Name</label>
-                    <input type="text" id="name" name="name" required placeholder="John Doe">
+                    <input type="text" id="name" name="name" required placeholder="Jane Doe">
                 </div>
 
                 <div class="form-row">
-                    <div class="form-group half">
+                    <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" required placeholder="john@example.com">
+                        <input type="email" id="email" name="email" required placeholder="jane@example.com">
                     </div>
-                    <div class="form-group half">
+                    <div class="form-group">
                         <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" required placeholder="+91 98765 43210">
+                        <input type="tel" id="phone" name="phone" required placeholder="+1 (555) 000-0000">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="city">City</label>
-                    <input type="text" id="city" name="city" required placeholder="Mumbai">
+                    <input type="text" id="city" name="city" required placeholder="San Francisco">
                 </div>
 
                 <div class="form-row">
-                    <div class="form-group half">
+                    <div class="form-group">
                         <label for="propertyType">Property Type</label>
                         <select id="propertyType" name="propertyType" required>
-                            <option value="" disabled selected>Select Type</option>
                             <option value="Residential">Residential</option>
                             <option value="Commercial">Commercial</option>
                             <option value="Industrial">Industrial</option>
                         </select>
                     </div>
-                    <div class="form-group half">
-                        <label for="billAmount">Avg Monthly Bill (₹)</label>
-                        <input type="number" id="billAmount" name="billAmount" required placeholder="5000">
+                    <div class="form-group">
+                        <label for="billAmount">Avg Monthly Bill</label>
+                        <input type="number" id="billAmount" name="billAmount" required placeholder="250">
                     </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary" id="submitBtn">
-                    <span class="btn-text">Unlock My Estimate ➔</span>
+                    Submit Proposal <i data-lucide="arrow-right" style="width: 16px;"></i>
                 </button>
             </form>
 
             <div id="successMessage" class="hidden success-msg">
-                <div class="success-icon">✅</div>
-                <h3>Request Received!</h3>
-                <p>We've logged your request into our secure CRM. Our sales team is reviewing your profile right now.</p>
-                <div class="calendar-simulate">
-                    <p>Want to book an expected follow-up?</p>
-                    <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Energybae+Solar+Consultation&details=Discussing+your+solar+options." target="_blank" class="btn btn-secondary">Add to Google Calendar</a>
-                </div>
+                <i data-lucide="check-circle-2" style="width: 48px; height: 48px; color: var(--success); margin-bottom: 1rem;"></i>
+                <h2>Request Logged</h2>
+                <p class="text-muted" style="margin-top: 0.5rem;">Your lead has been pushed to the CRM webhook successfully.</p>
             </div>
         </div>
-
     </div>
 
-    <!-- Script that handles form submission logic, local DB, and Apps Script Fetch -->
+    <!-- Script that handles logic -->
     <script src="js/app.js"></script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>

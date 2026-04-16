@@ -3,113 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Energybae CRM | Dashboard</title>
-    <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chart.js for data visualization -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Energybae CRM</title>
     <link rel="stylesheet" href="css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="dashboard-page">
 
-    <!-- Sidebar / Topbar Navigation -->
-    <nav class="navbar">
-        <div class="nav-brand">⚡ Energybae <span>OS</span></div>
-        <div class="nav-links">
-            <a href="index.html" class="nav-link">← Back to Form</a>
-            <div class="user-profile">
-                <div class="avatar">EB</div>
-                <span>Founder</span>
-            </div>
-        </div>
-    </nav>
-
     <!-- Auth Overlay -->
     <div id="authOverlay" class="auth-overlay">
-        <div class="glass-form auth-box">
-            <h2>Admin Security</h2>
-            <p class="subtitle" style="margin-bottom: 1rem;">Please enter the master passcode</p>
-            <input type="password" id="adminPassword" placeholder="Enter Password (hint: admin123)" style="margin-bottom:1rem;">
-            <button id="loginBtn" class="btn btn-primary" style="margin-top:0;">Decrypt Dashboard</button>
-            <p id="authError" style="color:var(--danger); margin-top:10px; display:none;">Incorrect passcode</p>
+        <div class="card">
+            <i data-lucide="lock" style="color: var(--text-muted); width: 32px; height: 32px; margin-bottom: 1rem;"></i>
+            <h2>Admin Console</h2>
+            <p class="text-muted text-sm" style="margin-bottom: 2rem;">Please authenticate to access the CRM.</p>
+            <div class="form-group" style="text-align: left;">
+                <input type="password" id="adminPassword" placeholder="Passcode (hint: admin123)">
+            </div>
+            <button id="loginBtn" class="btn btn-primary" style="margin-top:0;">Unlock</button>
+            <p id="authError" style="color: var(--danger); font-size: 0.85rem; margin-top: 1rem; display: none;">Invalid Passcode</p>
         </div>
     </div>
 
-    <div class="dashboard-container blurred" id="dashboardMain">
-        <header class="dashboard-header">
-            <h2>Real-Time Lead Analytics</h2>
-            <p>Syncs automatically with LocalStorage & Google Sheets Webhook.</p>
-            <div class="action-buttons">
-                <button id="demoDataBtn" class="btn btn-secondary btn-sm">Load Demo Data</button>
-                <button id="clearDataBtn" class="btn btn-danger btn-sm">Wipe Database</button>
+    <!-- Main Application -->
+    <div class="blurred" id="dashboardMain">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="brand">
+                <i data-lucide="building-2" style="width: 20px;"></i>
+                Energybae <span class="text-muted" style="font-weight: 400;">/</span> Admin
             </div>
-        </header>
+            <div class="nav-actions">
+                <button id="themeToggle" class="theme-toggle" aria-label="Toggle Theme">
+                    <i data-lucide="moon" class="moon-icon" style="width: 16px;"></i>
+                    <i data-lucide="sun" class="sun-icon hidden" style="width: 16px;"></i>
+                </button>
+                <div style="width: 1px; height: 16px; background: var(--border-color); margin: 0 0.5rem;"></div>
+                <div class="text-sm text-muted">chaitanya@energybae</div>
+            </div>
+        </nav>
 
-        <!-- KPI Scorecards -->
-        <div class="kpi-grid">
-            <div class="kpi-card glass-panel">
-                <div class="kpi-title">Total Leads</div>
-                <div class="kpi-value" id="kpiTotal">0</div>
-                <div class="kpi-trend positive">↑ 12% this week</div>
+        <div class="dashboard-container">
+            <!-- Header Operations -->
+            <div class="dash-header">
+                <div>
+                    <h2>Overview</h2>
+                    <p class="text-muted text-sm">Real-time metrics synced automatically from local state.</p>
+                </div>
+                <div class="actions">
+                    <button id="demoDataBtn" class="btn btn-secondary btn-sm"><i data-lucide="database" style="width: 14px;"></i> Load Demo Data</button>
+                    <button id="clearDataBtn" class="btn btn-secondary btn-sm" style="color: var(--danger);"><i data-lucide="trash-2" style="width: 14px;"></i> Wipe Data</button>
+                </div>
             </div>
-            <div class="kpi-card glass-panel">
-                <div class="kpi-title">Converted Leads</div>
-                <div class="kpi-value" id="kpiConverted">0</div>
-                <div class="kpi-trend positive">↑ 8% this week</div>
-            </div>
-            <div class="kpi-card glass-panel">
-                <div class="kpi-title">Conversion Rate</div>
-                <div class="kpi-value" id="kpiRate">0%</div>
-                <div class="kpi-trend">Stable</div>
-            </div>
-            <div class="kpi-card glass-panel alert-card">
-                <div class="kpi-title">Pending Follow-ups</div>
-                <div class="kpi-value" id="kpiPending">0</div>
-                <div class="kpi-trend negative">Needs attention</div>
-            </div>
-        </div>
 
-        <!-- Charts Section -->
-        <div class="charts-grid">
-            <div class="chart-card glass-panel">
-                <h3>Demand by Region (City)</h3>
-                <canvas id="cityChart"></canvas>
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="card kpi-card">
+                    <div class="text-muted text-xs uppercase" style="font-weight: 600; letter-spacing: 0.05em;">Total Leads</div>
+                    <div class="kpi-value" id="kpiTotal">0</div>
+                </div>
+                <div class="card kpi-card">
+                    <div class="text-muted text-xs uppercase" style="font-weight: 600; letter-spacing: 0.05em;">Converted</div>
+                    <div class="kpi-value" id="kpiConverted">0</div>
+                </div>
+                <div class="card kpi-card">
+                    <div class="text-muted text-xs uppercase" style="font-weight: 600; letter-spacing: 0.05em;">Conversion Rate</div>
+                    <div class="kpi-value" id="kpiRate">0%</div>
+                </div>
+                <div class="card kpi-card" style="border-left: 2px solid var(--danger);">
+                    <div class="text-xs uppercase" style="font-weight: 600; color: var(--danger); letter-spacing: 0.05em;">Needs Action (New)</div>
+                    <div class="kpi-value" id="kpiPending">0</div>
+                </div>
             </div>
-            <div class="chart-card glass-panel">
-                <h3>Revenue Potential by Property Type</h3>
-                <canvas id="propertyChart"></canvas>
-            </div>
-        </div>
 
-        <!-- Data Table -->
-        <div class="table-container glass-panel">
-            <div class="table-header">
-                <h3>Active Lead Pipeline</h3>
-                <input type="text" id="searchTable" placeholder="Search leads by name or city..." class="search-input">
+            <!-- Charts Row -->
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <div class="chart-header flex-center" style="justify-content: flex-start;"><i data-lucide="bar-chart-3" style="width: 16px;"></i> Leads by Region</div>
+                    <canvas id="cityChart" height="200"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-header flex-center" style="justify-content: flex-start;"><i data-lucide="pie-chart" style="width: 16px;"></i> Segment Analysis</div>
+                    <canvas id="propertyChart" height="200"></canvas>
+                </div>
             </div>
-            <div class="table-responsive">
-                <table id="leadsTable">
+
+            <!-- Data Table -->
+            <div class="table-wrapper">
+                <div style="padding: 1rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                    <div class="text-sm" style="font-weight: 500;">Lead Pipeline</div>
+                    <input type="text" id="searchTable" placeholder="Search..." style="width: 200px; padding: 0.4rem 0.75rem; font-size: 0.85rem; margin-bottom: 0;">
+                </div>
+                <table>
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Contact Info</th>
-                            <th>City</th>
-                            <th>Type</th>
-                            <th>Bill Avg (₹)</th>
-                            <th>Lead Score <span title="Calculated 1-100 automatically">ℹ️</span></th>
+                            <th>Contact</th>
+                            <th>Location</th>
+                            <th>Segment</th>
+                            <th>Value</th>
+                            <th>Health Score</th>
                             <th>Status Matrix</th>
-                            <th>Days Since</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
-                        <!-- Populated dynamically via JS -->
+                        <!-- Populated by JS -->
                     </tbody>
                 </table>
             </div>
+
         </div>
     </div>
 
-    <!-- Script that powers the dashboard -->
     <script src="js/app.js"></script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>

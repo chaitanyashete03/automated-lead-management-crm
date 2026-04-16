@@ -1,20 +1,51 @@
 /**
  * APP.JS - Energybae CRM System
- * Handles both the Front-end Form Logic and the Dashboard UI.
- * Connects LocalStorage with the external Google Apps Script Hook.
+ * Logic updated for Next-Gen Vercel/Linear Aesthetic Theme
  */
 
-// 1. Google Apps Script Web App URL
-// REPLACE THIS URL WITH YOUR ACTUAL PUBLISHED WEB APP URL FROM GOOGLE APPS SCRIPT
-const GOOGLE_APPS_SCRIPT_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwoy..../exec";
+const GOOGLE_APPS_SCRIPT_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwho0HSH0pPTYGPKsJd2hT9j1KVp5E1OptFQ4vRTtxfRaUwM_8NaUEkTXDjFo8fAIV4bQ/exec";
 
-// 2. Data Store Helper (LocalStorage)
+// --- Theme Management ---
+const initTheme = () => {
+    const isDark = localStorage.getItem('theme') === 'dark' || 
+                  (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    return isDark;
+};
+
+const setupThemeToggle = () => {
+    const btn = document.getElementById('themeToggle');
+    if (!btn) return;
+
+    const updateIcons = (isDark) => {
+        document.querySelector('.moon-icon').classList.toggle('hidden', isDark);
+        document.querySelector('.sun-icon').classList.toggle('hidden', !isDark);
+    };
+
+    let isDark = initTheme();
+    updateIcons(isDark);
+
+    btn.addEventListener('click', () => {
+        isDark = !isDark;
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateIcons(isDark);
+        
+        // Trigger chart re-render if we are on the dashboard
+        if (typeof renderChartsFunc === 'function') {
+            renderChartsFunc(); 
+        }
+    });
+};
+
+initTheme();
+
+// --- Local Data Store ---
 const Store = {
     getLeads: () => JSON.parse(localStorage.getItem('energybae_leads')) || [],
     addLead: (leadFormData) => {
         const leads = Store.getLeads();
         
-        // Lead Scoring Algorithm
         let score = 0;
         const pType = leadFormData.propertyType.toLowerCase();
         const bill = parseFloat(leadFormData.billAmount);
@@ -41,7 +72,6 @@ const Store = {
 
         leads.push(newLead);
         localStorage.setItem('energybae_leads', JSON.stringify(leads));
-        
         return newLead;
     },
     updateLeadStatus: (id, newStatus) => {
@@ -52,46 +82,41 @@ const Store = {
             localStorage.setItem('energybae_leads', JSON.stringify(leads));
         }
     },
-    clearAll: () => {
-        localStorage.removeItem('energybae_leads');
-    },
+    clearAll: () => localStorage.removeItem('energybae_leads'),
     loadDemoData: () => {
         const demoLeads = [
-            { id: "101", name: "Alice Solutions", email: "alice@corp.com", phone: "+91 91234 56780", city: "Mumbai", propertyType: "Commercial", billAmount: 25000, score: 100, status: "Converted", timestamp: new Date(Date.now() - 400000000).toISOString() },
-            { id: "102", name: "Ravi Teja", email: "ravi@gmail.com", phone: "+91 99887 77665", city: "Pune", propertyType: "Residential", billAmount: 6000, score: 50, status: "New", timestamp: new Date(Date.now() - 200000000).toISOString() },
-            { id: "103", name: "Sunshine Ind.", email: "info@sunshine.in", phone: "+91 98765 12345", city: "Ahmedabad", propertyType: "Industrial", billAmount: 85000, score: 100, status: "Proposal Sent", timestamp: new Date(Date.now() - 30000000).toISOString() },
-            { id: "104", name: "Mohan Das", email: "mohan.d@yahoo.com", phone: "+91 91122 33445", city: "Pune", propertyType: "Residential", billAmount: 3000, score: 30, status: "Contacted", timestamp: new Date(Date.now() - 1000000).toISOString() }
+            { id: "101", name: "Alice Solutions", email: "alice@corp.com", phone: "+1 555 1234", city: "San Francisco", propertyType: "Commercial", billAmount: 25000, score: 100, status: "Converted", timestamp: new Date(Date.now() - 400000000).toISOString() },
+            { id: "102", name: "Ravi Teja", email: "ravi@gmail.com", phone: "+1 555 5678", city: "Austin", propertyType: "Residential", billAmount: 600, score: 50, status: "New", timestamp: new Date(Date.now() - 200000000).toISOString() },
+            { id: "103", name: "Sunshine Ind.", email: "info@sunshine.in", phone: "+1 555 9012", city: "Seattle", propertyType: "Industrial", billAmount: 85000, score: 100, status: "Proposal Sent", timestamp: new Date(Date.now() - 30000000).toISOString() },
+            { id: "104", name: "Mohan Das", email: "mohan.d@yahoo.com", phone: "+1 555 3456", city: "Austin", propertyType: "Residential", billAmount: 300, score: 30, status: "Contacted", timestamp: new Date(Date.now() - 1000000).toISOString() }
         ];
         localStorage.setItem('energybae_leads', JSON.stringify(demoLeads));
     }
 };
 
-// 3. Google Apps Script Fetch Logic
+// --- API Sync ---
 const syncWithGoogleSheet = async (leadData) => {
     try {
-        // Warning: This fetch uses 'no-cors' mode to bypass CORS preflight errors in Google Apps Script.
-        // It's a "fire and forget" request. The response cannot be read programmatically.
-        const response = await fetch(GOOGLE_APPS_SCRIPT_WEBHOOK_URL, {
+        await fetch(GOOGLE_APPS_SCRIPT_WEBHOOK_URL, {
             method: 'POST',
             mode: 'no-cors',
-            headers: {
-                'Content-Type': 'text/plain' // Must use text/plain for Apps Script without preflight
-            },
+            headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify(leadData)
         });
-        console.log("Locally logged: Lead sent to Google successfully (no response data due to no-cors).");
+        console.log("Locally logged: Lead sent to Google via text/plain mode.");
     } catch (e) {
-        console.error("Failed to sync with Google Sheets:", e);
+        console.error("Failed to sync:", e);
     }
 };
 
-// 4. Form Page Logic (`index.html`)
+// --- Pages Logic ---
+
 const buildCapturePage = () => {
     const form = document.getElementById('leadForm');
     const successMsg = document.getElementById('successMessage');
     const submitBtn = document.getElementById('submitBtn');
 
-    if (!form) return; // Not on the form page
+    if (!form) return;
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -101,32 +126,24 @@ const buildCapturePage = () => {
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
 
-        // 1. Save locally
         const newLead = Store.addLead(data);
+        syncWithGoogleSheet(newLead);
 
-        // 2. Sync to cloud (Google Sheets Webhook + Auto Emails)
-        if(GOOGLE_APPS_SCRIPT_WEBHOOK_URL.includes("script.google.com/macros/s/AKfy")) {
-             syncWithGoogleSheet(newLead);
-        } else {
-             console.warn("Skipping Google Webhook Fetch: Please add your real Apps Script URL in app.js.");
-        }
-
-        // 3. UI Update
         setTimeout(() => {
             form.classList.add('hidden');
             successMsg.classList.remove('hidden');
-        }, 800);
+        }, 600);
     });
 };
 
-// 5. Dashboard Page Logic (`dashboard.html`)
-let cityChartInstance = null;
-let propertyChartInstance = null;
+// Expose rendering function globally so theme switcher can trigger it
+let renderChartsFunc = null;
 
 const buildDashboardPage = () => {
     const tableBody = document.getElementById('tableBody');
-    if (!tableBody) return; // Not on dashboard page
+    if (!tableBody) return;
 
+    // --- Admin Security ---
     const authOverlay = document.getElementById('authOverlay');
     const dashboardMain = document.getElementById('dashboardMain');
     const loginBtn = document.getElementById('loginBtn');
@@ -145,157 +162,150 @@ const buildDashboardPage = () => {
             if (adminPassword.value === 'admin123') {
                 sessionStorage.setItem('energybae_admin', 'true');
                 authCheck();
-                renderDashboard(); // Initial render after login
+                initDashboard();
             } else {
                 authError.style.display = 'block';
             }
         });
+        return; 
     }
 
-    const renderDashboard = () => {
-        const leads = Store.getLeads();
-        
-        // KPI Metrics
-        document.getElementById('kpiTotal').innerText = leads.length;
-        
-        const converted = leads.filter(l => l.status === 'Converted').length;
-        document.getElementById('kpiConverted').innerText = converted;
-        
-        const rate = leads.length > 0 ? ((converted / leads.length) * 100).toFixed(1) : 0;
-        document.getElementById('kpiRate').innerText = `${rate}%`;
-        
-        const pending = leads.filter(l => l.status === 'New').length;
-        document.getElementById('kpiPending').innerText = pending;
+    // --- Dashboard Core ---
+    let cityChartInstance = null;
+    let propertyChartInstance = null;
 
-        // Render Table
-        tableBody.innerHTML = '';
-        leads.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)).forEach(lead => {
+    const initDashboard = () => {
+        const renderDashboard = () => {
+            const leads = Store.getLeads();
             
-            const diffTime = Math.abs(new Date() - new Date(lead.timestamp));
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            
-            // Score formatting
-            let scoreClass = 'score-high';
-            if(lead.score < 80) scoreClass = 'score-med';
-            if(lead.score < 40) scoreClass = 'score-low';
+            document.getElementById('kpiTotal').innerText = leads.length;
+            const converted = leads.filter(l => l.status === 'Converted').length;
+            document.getElementById('kpiConverted').innerText = converted;
+            const rate = leads.length > 0 ? ((converted / leads.length) * 100).toFixed(1) : 0;
+            document.getElementById('kpiRate').innerText = `${rate}%`;
+            document.getElementById('kpiPending').innerText = leads.filter(l => l.status === 'New').length;
 
-            // Select Status Mapping
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td><strong>${lead.name}</strong></td>
-                <td><small>${lead.phone}<br/>${lead.email}</small></td>
-                <td>${lead.city}</td>
-                <td>${lead.propertyType}</td>
-                <td>₹${lead.billAmount.toLocaleString()}</td>
-                <td class="${scoreClass}">${lead.score}/100</td>
-                <td>
-                    <select class="status-select select-${lead.status.toLowerCase().replace(' ', '')}" data-id="${lead.id}">
-                        <option value="New" ${lead.status === 'New' ? 'selected' : ''}>New</option>
-                        <option value="Contacted" ${lead.status === 'Contacted' ? 'selected' : ''}>Contacted</option>
-                        <option value="Proposal Sent" ${lead.status === 'Proposal Sent' ? 'selected' : ''}>Proposal Sent</option>
-                        <option value="Converted" ${lead.status === 'Converted' ? 'selected' : ''}>Converted</option>
-                        <option value="Lost" ${lead.status === 'Lost' ? 'selected' : ''}>Lost</option>
-                    </select>
-                </td>
-                <td>${diffDays} day(s)</td>
-            `;
-            tableBody.appendChild(tr);
+            tableBody.innerHTML = '';
+            leads.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)).forEach(lead => {
+                
+                let scoreColor = lead.score >= 80 ? 'var(--success)' : (lead.score >= 40 ? 'var(--accent)' : 'var(--text-muted)');
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div style="font-weight: 500">${lead.name}</div>
+                        <div class="text-xs text-muted">${lead.email}</div>
+                    </td>
+                    <td class="text-sm">${lead.city}</td>
+                    <td class="text-sm">${lead.propertyType}</td>
+                    <td class="text-sm font-mono">$${lead.billAmount.toLocaleString()}</td>
+                    <td class="text-sm" style="color: ${scoreColor}; font-weight: 600;">${lead.score} / 100</td>
+                    <td>
+                        <select class="status-badge" data-id="${lead.id}">
+                            <option value="New" ${lead.status === 'New' ? 'selected' : ''}>New</option>
+                            <option value="Contacted" ${lead.status === 'Contacted' ? 'selected' : ''}>Contacted</option>
+                            <option value="Proposal Sent" ${lead.status === 'Proposal Sent' ? 'selected' : ''}>Proposal Sent</option>
+                            <option value="Converted" ${lead.status === 'Converted' ? 'selected' : ''}>Converted</option>
+                            <option value="Lost" ${lead.status === 'Lost' ? 'selected' : ''}>Lost</option>
+                        </select>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+
+            document.querySelectorAll('.status-badge').forEach(select => {
+                select.addEventListener('change', (e) => {
+                    Store.updateLeadStatus(e.target.getAttribute('data-id'), e.target.value);
+                    renderDashboard();
+                });
+            });
+
+            renderChartsFunc = () => renderCharts(leads);
+            renderChartsFunc();
+        };
+
+        const renderCharts = (leads) => {
+            const cityMap = {};
+            const pTypeMap = { 'Residential': 0, 'Commercial': 0, 'Industrial': 0 };
+
+            leads.forEach(l => {
+                cityMap[l.city] = (cityMap[l.city] || 0) + 1;
+                if(pTypeMap[l.propertyType] !== undefined) pTypeMap[l.propertyType]++;
+            });
+
+            // Modern chart settings
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+            const textColor = isDark ? '#a1a1aa' : '#71717a';
+            const primaryBarColor = isDark ? '#ededed' : '#09090b';
+
+            if (cityChartInstance) cityChartInstance.destroy();
+            const ctxCity = document.getElementById('cityChart').getContext('2d');
+            cityChartInstance = new Chart(ctxCity, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(cityMap),
+                    datasets: [{
+                        data: Object.values(cityMap),
+                        backgroundColor: primaryBarColor,
+                        borderRadius: 4,
+                        barThickness: 32
+                    }]
+                },
+                options: { 
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }, 
+                    scales: { 
+                        y: { border: {display: false}, grid: { color: gridColor }, ticks: {color: textColor, stepSize: 1} }, 
+                        x: { border: {display: false}, grid: { display: false }, ticks: {color: textColor} } 
+                    }
+                }
+            });
+
+            if (propertyChartInstance) propertyChartInstance.destroy();
+            const ctxProp = document.getElementById('propertyChart').getContext('2d');
+            propertyChartInstance = new Chart(ctxProp, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(pTypeMap),
+                    datasets: [{
+                        data: Object.values(pTypeMap),
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: { 
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: { legend: { position: 'right', labels: {color: textColor, usePointStyle: true, boxWidth: 8} } } 
+                }
+            });
+        };
+
+        renderDashboard();
+
+        document.getElementById('demoDataBtn').addEventListener('click', () => { Store.loadDemoData(); renderDashboard(); });
+        document.getElementById('clearDataBtn').addEventListener('click', () => {
+            if(confirm("Confirm extreme data wipe?")) { Store.clearAll(); renderDashboard(); }
         });
 
-        // Add Event Listeners to the newly rendered dropdowns
-        document.querySelectorAll('.status-select').forEach(select => {
-            select.addEventListener('change', (e) => {
-                const id = e.target.getAttribute('data-id');
-                const newStatus = e.target.value;
-                Store.updateLeadStatus(id, newStatus);
-                renderDashboard(); // Re-render to update charts and KPIs natively
+        document.getElementById('searchTable').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            tableBody.querySelectorAll('tr').forEach(row => {
+                const textContext = row.innerText.toLowerCase();
+                row.style.display = textContext.includes(query) ? '' : 'none';
             });
         });
-
-        // Render Charts
-        renderCharts(leads);
     };
 
-    const renderCharts = (leads) => {
-        // Prepare City Data
-        const cityMap = {};
-        const pTypeMap = { 'Residential': 0, 'Commercial': 0, 'Industrial': 0 };
-
-        leads.forEach(l => {
-            cityMap[l.city] = (cityMap[l.city] || 0) + 1;
-            if(pTypeMap[l.propertyType] !== undefined) pTypeMap[l.propertyType]++;
-        });
-
-        const chartColors = ['#f59e0b', '#3b82f6', '#10b981', '#8b5cf6', '#ef4444'];
-
-        if (cityChartInstance) cityChartInstance.destroy();
-        const ctxCity = document.getElementById('cityChart').getContext('2d');
-        cityChartInstance = new Chart(ctxCity, {
-            type: 'bar',
-            data: {
-                labels: Object.keys(cityMap),
-                datasets: [{
-                    label: 'Leads by City',
-                    data: Object.values(cityMap),
-                    backgroundColor: chartColors[1],
-                    borderRadius: 5
-                }]
-            },
-            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: {color: "#fff"} }, x: { ticks: {color:"#fff"} } }}
-        });
-
-        if (propertyChartInstance) propertyChartInstance.destroy();
-        const ctxProp = document.getElementById('propertyChart').getContext('2d');
-        propertyChartInstance = new Chart(ctxProp, {
-            type: 'doughnut',
-            data: {
-                labels: Object.keys(pTypeMap),
-                datasets: [{
-                    data: Object.values(pTypeMap),
-                    backgroundColor: chartColors,
-                    borderWidth: 0
-                }]
-            },
-            options: { plugins: { legend: { position: 'bottom', labels: {color: "#fff"} } } }
-        });
-    };
-
-    // Initialize Dashboard
-    if (authCheck()) {
-        renderDashboard();
-    }
-
-    // Data Management Buttons
-    document.getElementById('demoDataBtn').addEventListener('click', () => {
-        Store.loadDemoData();
-        renderDashboard();
-    });
-
-    document.getElementById('clearDataBtn').addEventListener('click', () => {
-        if(confirm("Are you sure you want to wipe all local leads?")) {
-            Store.clearAll();
-            renderDashboard();
-        }
-    });
-
-    // Search Filtering
-    document.getElementById('searchTable').addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        const rows = tableBody.querySelectorAll('tr');
-        rows.forEach(row => {
-            const name = row.children[0].innerText.toLowerCase();
-            const city = row.children[2].innerText.toLowerCase();
-            if (name.includes(query) || city.includes(query)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    });
+    initDashboard();
 };
 
-// Initialization Router
 document.addEventListener("DOMContentLoaded", () => {
+    setupThemeToggle();
     buildCapturePage();
     buildDashboardPage();
 });
