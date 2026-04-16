@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energybae | Go Solar Today</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="capture-page">
+
+    <!-- Decorative background blobs -->
+    <div class="blob top-left"></div>
+    <div class="blob bottom-right"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">⚡ Energybae</h1>
+            <p>Your journey to clean, free energy starts here.</p>
+        </header>
+
+        <div class="card glass-form">
+            <h2>Get Your Free Solar Estimate</h2>
+            <p class="subtitle">Enter your details below and our experts will contact you within 24 hours.</p>
+
+            <form id="leadForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required placeholder="John Doe">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required placeholder="john@example.com">
+                    </div>
+                    <div class="form-group half">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required placeholder="+91 98765 43210">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="city" required placeholder="Mumbai">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="propertyType">Property Type</label>
+                        <select id="propertyType" name="propertyType" required>
+                            <option value="" disabled selected>Select Type</option>
+                            <option value="Residential">Residential</option>
+                            <option value="Commercial">Commercial</option>
+                            <option value="Industrial">Industrial</option>
+                        </select>
+                    </div>
+                    <div class="form-group half">
+                        <label for="billAmount">Avg Monthly Bill (₹)</label>
+                        <input type="number" id="billAmount" name="billAmount" required placeholder="5000">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    <span class="btn-text">Unlock My Estimate ➔</span>
+                </button>
+            </form>
+
+            <div id="successMessage" class="hidden success-msg">
+                <div class="success-icon">✅</div>
+                <h3>Request Received!</h3>
+                <p>We've logged your request into our secure CRM. Our sales team is reviewing your profile right now.</p>
+                <div class="calendar-simulate">
+                    <p>Want to book an expected follow-up?</p>
+                    <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Energybae+Solar+Consultation&details=Discussing+your+solar+options." target="_blank" class="btn btn-secondary">Add to Google Calendar</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script that handles form submission logic, local DB, and Apps Script Fetch -->
+    <script src="js/app.js"></script>
+</body>
+</html>
