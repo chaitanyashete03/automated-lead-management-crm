@@ -1,5 +1,5 @@
 /**
- * APP.JS - Energybae CRM System
+ * APP.JS - Solar CRM System
  * Logic updated for Next-Gen Vercel/Linear Aesthetic Theme
  */
 
@@ -42,7 +42,7 @@ initTheme();
 
 // --- Local Data Store ---
 const Store = {
-    getLeads: () => JSON.parse(localStorage.getItem('energybae_leads')) || [],
+    getLeads: () => JSON.parse(localStorage.getItem('solarcrm_leads')) || [],
     addLead: (leadFormData) => {
         const leads = Store.getLeads();
 
@@ -71,7 +71,7 @@ const Store = {
         };
 
         leads.push(newLead);
-        localStorage.setItem('energybae_leads', JSON.stringify(leads));
+        localStorage.setItem('solarcrm_leads', JSON.stringify(leads));
         return newLead;
     },
     updateLeadStatus: (id, newStatus) => {
@@ -79,10 +79,10 @@ const Store = {
         const index = leads.findIndex(l => l.id === id);
         if (index !== -1) {
             leads[index].status = newStatus;
-            localStorage.setItem('energybae_leads', JSON.stringify(leads));
+            localStorage.setItem('solarcrm_leads', JSON.stringify(leads));
         }
     },
-    clearAll: () => localStorage.removeItem('energybae_leads'),
+    clearAll: () => localStorage.removeItem('solarcrm_leads'),
     loadDemoData: () => {
         const demoLeads = [
             { id: "101", name: "Alice Solutions", email: "alice@corp.com", phone: "+1 555 1234", city: "San Francisco", propertyType: "Commercial", billAmount: 25000, score: 100, status: "Converted", timestamp: new Date(Date.now() - 400000000).toISOString() },
@@ -90,7 +90,7 @@ const Store = {
             { id: "103", name: "Sunshine Ind.", email: "info@sunshine.in", phone: "+1 555 9012", city: "Seattle", propertyType: "Industrial", billAmount: 85000, score: 100, status: "Proposal Sent", timestamp: new Date(Date.now() - 30000000).toISOString() },
             { id: "104", name: "Mohan Das", email: "mohan.d@yahoo.com", phone: "+1 555 3456", city: "Austin", propertyType: "Residential", billAmount: 300, score: 30, status: "Contacted", timestamp: new Date(Date.now() - 1000000).toISOString() }
         ];
-        localStorage.setItem('energybae_leads', JSON.stringify(demoLeads));
+        localStorage.setItem('solarcrm_leads', JSON.stringify(demoLeads));
     }
 };
 
@@ -153,13 +153,13 @@ const buildDashboardPage = () => {
 
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
-            sessionStorage.removeItem('energybae_admin');
+            sessionStorage.removeItem('solarcrm_admin');
             window.location.reload();
         });
     }
 
     const authCheck = () => {
-        if (sessionStorage.getItem('energybae_admin') !== 'true') return false;
+        if (sessionStorage.getItem('solarcrm_admin') !== 'true') return false;
         authOverlay.style.display = 'none';
         dashboardMain.classList.remove('blurred');
         return true;
@@ -168,7 +168,7 @@ const buildDashboardPage = () => {
     if (!authCheck()) {
         loginBtn.addEventListener('click', () => {
             if (adminPassword.value === 'admin123') {
-                sessionStorage.setItem('energybae_admin', 'true');
+                sessionStorage.setItem('solarcrm_admin', 'true');
                 authCheck();
                 initDashboard();
             } else {

@@ -1,40 +1,20 @@
-/**
- * ========================================================
- * 🚀 ENERGYBAE WEBHOOK - GOOGLE APPS SCRIPT FILE
- * ========================================================
- * 
- * INSTRUCTIONS:
- * 1. Go to Google Sheets -> Extensions -> Apps Script
- * 2. Delete everything there and Paste this code.
- * 3. Save it.
- * 4. Click "Deploy" -> "New Deployment"
- * 5. Type: "Web App"
- * 6. Execute as: "Me"
- * 7. Who has access: "Anyone" (crucial for web hooks)
- * 8. Copy the "Web App URL" given to you and paste it into `js/app.js` locally.
- * 
- */
-
 const CONFIG = {
-  SALES_EMAIL: "chaitanyashete95@gmail.com", // Change this!
-  SHEET_NAME: "automated lead management (crm)" // Change to your actual sheet name
+  SALES_EMAIL: "chaitanyashete95@gmail.com",
+  SHEET_NAME: "Sheet1",
+  // PASTE YOUR SPREADSHEET ID HERE 👇
+  SPREADSHEET_ID: "1rQYnUkLyACAqjOM1sZZx6fPvVN0ANfYAn8R_c1UcV3o"
 };
 
-/**
- * The doPost method is automatically called when your web app (HTML fetch)
- * sends a POST request to the Web App URL.
- */
 function doPost(e) {
   try {
-    // We send payload as text/plain from the client to avoid CORS preflight options.
-    // Therefore we parse the postData contents.
     const leadData = JSON.parse(e.postData.contents);
 
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.SHEET_NAME);
+    // Using openById is 100% foolproof
+    const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+    const sheet = ss.getSheetByName(CONFIG.SHEET_NAME) || ss.getSheets()[0];
 
-    // Add row to Google Sheet
     sheet.appendRow([
-      leadData.timestamp,
+      new Date().toLocaleString(),
       leadData.id,
       leadData.name,
       leadData.email,
@@ -46,30 +26,16 @@ function doPost(e) {
       leadData.status
     ]);
 
-    // Optional: Send Email Alert 
-    const subject = `🚨 NEW LOCAL LEAD [Score: ${leadData.score}] - ${leadData.name}`;
-    const body = `
-      New Lead Synced from Web App:
-      Name: ${leadData.name}
-      Email: ${leadData.email}
-      Phone: ${leadData.phone}
-      City: ${leadData.city}
-      Type: ${leadData.propertyType}
-      Score: ${leadData.score}
-    `;
-    MailApp.sendEmail(CONFIG.SALES_EMAIL, subject, body);
+    // Send Email
+    MailApp.sendEmail(CONFIG.SALES_EMAIL, "New Lead", "Received lead: " + leadData.name);
 
-    // Creates an all-day event on your default calendar
-    const followUpDate = new Date();
-    followUpDate.setDate(followUpDate.getDate() + 3);
-    const eventTitle = `📞 Follow-up: ${leadData.name}`;
-    CalendarApp.getDefaultCalendar().createAllDayEvent(eventTitle, followUpDate, { description: `Call ${leadData.phone}` });
-
-    return ContentService.createTextOutput(JSON.stringify({ status: "success", id: leadData.id }))
+    return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: error.message }))
+    // If it fails, this will tell us exactly why in the "Executions" tab
+    console.error("Critical Error: " + error.message);
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", error: error.message }))
       .setMimeType(ContentService.MimeType.JSON);
   }
 }
