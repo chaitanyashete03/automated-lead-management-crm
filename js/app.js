@@ -149,6 +149,14 @@ const buildDashboardPage = () => {
     const loginBtn = document.getElementById('loginBtn');
     const adminPassword = document.getElementById('adminPassword');
     const authError = document.getElementById('authError');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            sessionStorage.removeItem('energybae_admin');
+            window.location.reload();
+        });
+    }
 
     const authCheck = () => {
         if (sessionStorage.getItem('energybae_admin') !== 'true') return false;
