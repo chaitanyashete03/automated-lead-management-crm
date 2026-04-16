@@ -168,8 +168,8 @@ const buildDashboardPage = () => {
             }
         });
     } else {
-        // Schedule initDashboard to run immediately after definition
-        setTimeout(initDashboard, 0);
+        // Schedule initDashboard to run immediately after definition using closure to avoid ReferenceError
+        setTimeout(() => initDashboard(), 0);
     }
 
     // --- Dashboard Core ---
