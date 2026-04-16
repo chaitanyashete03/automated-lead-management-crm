@@ -16,8 +16,8 @@
  */
 
 const CONFIG = {
-  SALES_EMAIL: "sales@energybae.com", // Change this!
-  SHEET_NAME: "Sheet1" // Change to your actual sheet name
+  SALES_EMAIL: "chaitanyashete95@gmail.com", // Change this!
+  SHEET_NAME: "automated lead management (crm)" // Change to your actual sheet name
 };
 
 /**
@@ -29,9 +29,9 @@ function doPost(e) {
     // We send payload as text/plain from the client to avoid CORS preflight options.
     // Therefore we parse the postData contents.
     const leadData = JSON.parse(e.postData.contents);
-    
+
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.SHEET_NAME);
-    
+
     // Add row to Google Sheet
     sheet.appendRow([
       leadData.timestamp,
@@ -45,7 +45,7 @@ function doPost(e) {
       leadData.score,
       leadData.status
     ]);
-    
+
     // Optional: Send Email Alert 
     const subject = `🚨 NEW LOCAL LEAD [Score: ${leadData.score}] - ${leadData.name}`;
     const body = `
@@ -63,13 +63,13 @@ function doPost(e) {
     const followUpDate = new Date();
     followUpDate.setDate(followUpDate.getDate() + 3);
     const eventTitle = `📞 Follow-up: ${leadData.name}`;
-    CalendarApp.getDefaultCalendar().createAllDayEvent(eventTitle, followUpDate, {description: `Call ${leadData.phone}`});
-    
+    CalendarApp.getDefaultCalendar().createAllDayEvent(eventTitle, followUpDate, { description: `Call ${leadData.phone}` });
+
     return ContentService.createTextOutput(JSON.stringify({ status: "success", id: leadData.id }))
       .setMimeType(ContentService.MimeType.JSON);
-      
+
   } catch (error) {
     return ContentService.createTextOutput(JSON.stringify({ status: "error", message: error.message }))
       .setMimeType(ContentService.MimeType.JSON);
-    }
+  }
 }

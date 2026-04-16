@@ -3,12 +3,12 @@
  * Logic updated for Next-Gen Vercel/Linear Aesthetic Theme
  */
 
-const GOOGLE_APPS_SCRIPT_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwho0HSH0pPTYGPKsJd2hT9j1KVp5E1OptFQ4vRTtxfRaUwM_8NaUEkTXDjFo8fAIV4bQ/exec";
+const GOOGLE_APPS_SCRIPT_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzCzz_Phn2MFMVGGENdpXUMhVInpluHQ3JzF9QnEblGXk9CsYrAkQ43zGcwHvInOZ1o/exec";
 
 // --- Theme Management ---
 const initTheme = () => {
-    const isDark = localStorage.getItem('theme') === 'dark' || 
-                  (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const isDark = localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
     return isDark;
 };
@@ -30,10 +30,10 @@ const setupThemeToggle = () => {
         document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
         updateIcons(isDark);
-        
+
         // Trigger chart re-render if we are on the dashboard
         if (typeof renderChartsFunc === 'function') {
-            renderChartsFunc(); 
+            renderChartsFunc();
         }
     });
 };
@@ -45,14 +45,14 @@ const Store = {
     getLeads: () => JSON.parse(localStorage.getItem('energybae_leads')) || [],
     addLead: (leadFormData) => {
         const leads = Store.getLeads();
-        
+
         let score = 0;
         const pType = leadFormData.propertyType.toLowerCase();
         const bill = parseFloat(leadFormData.billAmount);
-        
+
         if (pType === "commercial" || pType === "industrial") score += 50;
         else score += 20;
-        
+
         if (bill >= 15000) score += 50;
         else if (bill >= 5000) score += 30;
         else score += 10;
@@ -187,7 +187,7 @@ const buildDashboardPage = () => {
     const initDashboard = () => {
         const renderDashboard = () => {
             const leads = Store.getLeads();
-            
+
             document.getElementById('kpiTotal').innerText = leads.length;
             const converted = leads.filter(l => l.status === 'Converted').length;
             document.getElementById('kpiConverted').innerText = converted;
@@ -196,8 +196,8 @@ const buildDashboardPage = () => {
             document.getElementById('kpiPending').innerText = leads.filter(l => l.status === 'New').length;
 
             tableBody.innerHTML = '';
-            leads.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)).forEach(lead => {
-                
+            leads.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).forEach(lead => {
+
                 let scoreColor = lead.score >= 80 ? 'var(--success)' : (lead.score >= 40 ? 'var(--accent)' : 'var(--text-muted)');
 
                 const tr = document.createElement('tr');
@@ -240,7 +240,7 @@ const buildDashboardPage = () => {
 
             leads.forEach(l => {
                 cityMap[l.city] = (cityMap[l.city] || 0) + 1;
-                if(pTypeMap[l.propertyType] !== undefined) pTypeMap[l.propertyType]++;
+                if (pTypeMap[l.propertyType] !== undefined) pTypeMap[l.propertyType]++;
             });
 
             // Modern chart settings
@@ -262,13 +262,13 @@ const buildDashboardPage = () => {
                         barThickness: 32
                     }]
                 },
-                options: { 
+                options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } }, 
-                    scales: { 
-                        y: { border: {display: false}, grid: { color: gridColor }, ticks: {color: textColor, stepSize: 1} }, 
-                        x: { border: {display: false}, grid: { display: false }, ticks: {color: textColor} } 
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { border: { display: false }, grid: { color: gridColor }, ticks: { color: textColor, stepSize: 1 } },
+                        x: { border: { display: false }, grid: { display: false }, ticks: { color: textColor } }
                     }
                 }
             });
@@ -286,11 +286,11 @@ const buildDashboardPage = () => {
                         hoverOffset: 4
                     }]
                 },
-                options: { 
+                options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     cutout: '75%',
-                    plugins: { legend: { position: 'right', labels: {color: textColor, usePointStyle: true, boxWidth: 8} } } 
+                    plugins: { legend: { position: 'right', labels: { color: textColor, usePointStyle: true, boxWidth: 8 } } }
                 }
             });
         };
@@ -299,7 +299,7 @@ const buildDashboardPage = () => {
 
         document.getElementById('demoDataBtn').addEventListener('click', () => { Store.loadDemoData(); renderDashboard(); });
         document.getElementById('clearDataBtn').addEventListener('click', () => {
-            if(confirm("Confirm extreme data wipe?")) { Store.clearAll(); renderDashboard(); }
+            if (confirm("Confirm extreme data wipe?")) { Store.clearAll(); renderDashboard(); }
         });
 
         document.getElementById('searchTable').addEventListener('input', (e) => {
