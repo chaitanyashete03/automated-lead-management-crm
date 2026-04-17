@@ -1,7 +1,7 @@
 # ☀️ Solar CRM: Industrial-Grade Lead Management System
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge)](https://energybae-crm.vercel.app/)
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?style=for-the-badge)](https://github.com/chaitanyashete03/automated-lead-management-crm-)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge)](https://solarbae-crm.vercel.app)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?style=for-the-badge)](https://github.com/chaitanyashete03/automated-lead-management-crm)
 
 ## 🚀 Executive Summary
 In the high-stakes solar energy industry, **lead leakage** (failing to follow up within 48 hours) can result in a 30% loss in potential revenue. **Solar CRM** is a professional-grade, serverless lead management solution engineered to eliminate manual overhead and maximize conversion rates.
