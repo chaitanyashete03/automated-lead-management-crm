@@ -97,4 +97,4 @@ cd automated-lead-management-crm-
 ## 📬 Contact Information
 **Developer**: Chaitanya Shete  
 **Project**: [Solar CRM Live Demo](https://energybae-crm.vercel.app/)  
-**Inquiry**: [admin@solarcrm.com](mailto:admin@solarcrm.com)
+**Inquiry**: [chaitanyashete95@gmail.com](mailto: chaitanyashete95@gmail.com)
