@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,11 +8,13 @@
     <link rel="stylesheet" href="css/main.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body>
 
     <!-- Simple Modern Topbar -->
     <nav class="navbar" style="background: transparent; border: none; padding-top: 1.5rem;">
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0;">
+        <div class="container"
+            style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0;">
             <div class="brand">
                 <i data-lucide="zap" style="color: var(--text-main); width: 20px;"></i>
                 Solar CRM
@@ -28,7 +31,8 @@
     <div class="container" style="padding-top: 1rem;">
         <div style="margin-bottom: 2.5rem;">
             <h1>Get Your Estimate.</h1>
-            <p class="text-muted" style="margin-top: 0.5rem;">Enter your property details below for an automated solar consultation.</p>
+            <p class="text-muted" style="margin-top: 0.5rem;">Enter your property details below for an automated solar
+                consultation.</p>
         </div>
 
         <div class="card card-padded">
@@ -45,7 +49,8 @@
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" required placeholder="9876543210" pattern="[0-9]{10}" maxlength="10" minlength="10">
+                        <input type="tel" id="phone" name="phone" required placeholder="9876543210" pattern="[0-9]{10}"
+                            maxlength="10" minlength="10">
                     </div>
                 </div>
 
@@ -75,9 +80,11 @@
             </form>
 
             <div id="successMessage" class="hidden success-msg">
-                <i data-lucide="check-circle-2" style="width: 48px; height: 48px; color: var(--success); margin-bottom: 1rem;"></i>
+                <i data-lucide="check-circle-2"
+                    style="width: 48px; height: 48px; color: var(--success); margin-bottom: 1rem;"></i>
                 <h2>Request Logged</h2>
-                <p class="text-muted" style="margin-top: 0.5rem;">Your lead has been pushed to the CRM webhook successfully.</p>
+                <p class="text-muted" style="margin-top: 0.5rem;">Your lead has been pushed to the CRM webhook
+                    successfully.</p>
             </div>
         </div>
     </div>
@@ -86,4 +93,5 @@
     <script src="js/app.js"></script>
     <script>lucide.createIcons();</script>
 </body>
+
 </html>
