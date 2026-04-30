@@ -35,23 +35,23 @@
             <form id="leadForm">
                 <div class="form-group">
                     <label for="name">Full Name</label>
-                    <input type="text" id="name" name="name" required placeholder="Jane Doe">
+                    <input type="text" id="name" name="name" required placeholder="Rahul Sharma">
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" required placeholder="jane@example.com">
+                        <input type="email" id="email" name="email" required placeholder="rahul.sharma@example.com">
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" required placeholder="+1 (555) 000-0000">
+                        <input type="tel" id="phone" name="phone" required placeholder="9876543210" pattern="[0-9]{10}" maxlength="10" minlength="10">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="city">City</label>
-                    <input type="text" id="city" name="city" required placeholder="San Francisco">
+                    <input type="text" id="city" name="city" required placeholder="Mumbai">
                 </div>
 
                 <div class="form-row">
@@ -64,8 +64,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="billAmount">Avg Monthly Bill</label>
-                        <input type="number" id="billAmount" name="billAmount" required placeholder="250">
+                        <label for="billAmount">Avg Monthly Bill (₹)</label>
+                        <input type="number" id="billAmount" name="billAmount" required placeholder="2500">
                     </div>
                 </div>
 

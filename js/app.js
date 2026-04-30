@@ -85,10 +85,10 @@ const Store = {
     clearAll: () => localStorage.removeItem('solarcrm_leads'),
     loadDemoData: () => {
         const demoLeads = [
-            { id: "101", name: "Alice Solutions", email: "alice@corp.com", phone: "+1 555 1234", city: "San Francisco", propertyType: "Commercial", billAmount: 25000, score: 100, status: "Converted", timestamp: new Date(Date.now() - 400000000).toISOString() },
-            { id: "102", name: "Ravi Teja", email: "ravi@gmail.com", phone: "+1 555 5678", city: "Austin", propertyType: "Residential", billAmount: 600, score: 50, status: "New", timestamp: new Date(Date.now() - 200000000).toISOString() },
-            { id: "103", name: "Sunshine Ind.", email: "info@sunshine.in", phone: "+1 555 9012", city: "Seattle", propertyType: "Industrial", billAmount: 85000, score: 100, status: "Proposal Sent", timestamp: new Date(Date.now() - 30000000).toISOString() },
-            { id: "104", name: "Mohan Das", email: "mohan.d@yahoo.com", phone: "+1 555 3456", city: "Austin", propertyType: "Residential", billAmount: 300, score: 30, status: "Contacted", timestamp: new Date(Date.now() - 1000000).toISOString() }
+            { id: "101", name: "Amit Patel", email: "amit.patel@corp.in", phone: "9876543210", city: "Mumbai", propertyType: "Commercial", billAmount: 25000, score: 100, status: "Converted", timestamp: new Date(Date.now() - 400000000).toISOString() },
+            { id: "102", name: "Priya Singh", email: "priya.s@gmail.com", phone: "8765432109", city: "Bangalore", propertyType: "Residential", billAmount: 6000, score: 50, status: "New", timestamp: new Date(Date.now() - 200000000).toISOString() },
+            { id: "103", name: "Modern Solar Ind.", email: "info@modernsolar.in", phone: "7654321098", city: "Pune", propertyType: "Industrial", billAmount: 85000, score: 100, status: "Proposal Sent", timestamp: new Date(Date.now() - 30000000).toISOString() },
+            { id: "104", name: "Rahul Sharma", email: "rahul.sharma@yahoo.in", phone: "6543210987", city: "Delhi", propertyType: "Residential", billAmount: 3000, score: 30, status: "Contacted", timestamp: new Date(Date.now() - 1000000).toISOString() }
         ];
         localStorage.setItem('solarcrm_leads', JSON.stringify(demoLeads));
     }
@@ -120,11 +120,26 @@ const buildCapturePage = () => {
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        submitBtn.innerHTML = "Processing...";
-        submitBtn.disabled = true;
-
+        
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
+
+        // --- Strict Validation ---
+        const phoneRegex = /^[0-9]{10}$/;
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (!phoneRegex.test(data.phone)) {
+            alert("Please enter a valid 10-digit Indian phone number.");
+            return;
+        }
+
+        if (!emailRegex.test(data.email)) {
+            alert("Please enter a valid email address.");
+            return;
+        }
+
+        submitBtn.innerHTML = "Processing...";
+        submitBtn.disabled = true;
 
         const newLead = Store.addLead(data);
         syncWithGoogleSheet(newLead);
@@ -208,7 +223,7 @@ const buildDashboardPage = () => {
                     </td>
                     <td class="text-sm">${lead.city}</td>
                     <td class="text-sm">${lead.propertyType}</td>
-                    <td class="text-sm font-mono">$${lead.billAmount.toLocaleString()}</td>
+                    <td class="text-sm font-mono">₹${lead.billAmount.toLocaleString()}</td>
                     <td class="text-sm" style="color: ${scoreColor}; font-weight: 600;">${lead.score} / 100</td>
                     <td>
                         <select class="status-badge" data-id="${lead.id}">
